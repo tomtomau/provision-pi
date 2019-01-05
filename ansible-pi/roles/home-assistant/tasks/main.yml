@@ -1,0 +1,7 @@
+---
+- name: 'Install require apt-get packages'
+  apt:
+      pkg: [libavahi-compat-libdnssd-dev]
+      state: installed
+  become: yes
+  become_method: sudo
