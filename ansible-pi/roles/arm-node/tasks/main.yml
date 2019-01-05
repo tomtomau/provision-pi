@@ -1,0 +1,32 @@
+- name: download archive
+  get_url: >
+    url=https://nodejs.org/dist/{{ arm_node.version }}/node-{{ arm_node.version }}-linux-{{ arm_node.architecture }}.tar.gz
+    dest=/tmp/node-{{ arm_node.version }}.tar.gz
+    sha256sum={{ arm_node.sha256sum }}
+- name: create install directory
+  become: true
+  file: >
+    path={{ arm_node.install_dir }}
+    state=directory
+    mode=0755
+- name: install
+  become: true
+  command: /bin/tar xvzf /tmp/node-{{ arm_node.version }}.tar.gz -C {{ arm_node.install_dir }} --strip 1
+    creates={{ arm_node.install_dir }}/bin/node
+
+- name: link node binary
+  become: true
+  command: /bin/ln -s /opt/node/bin/node /usr/local/bin/node
+    creates=/usr/local/bin/node
+
+- name: link npm binary
+  become: true
+  command: /bin/ln -s /opt/node/bin/npm /usr/local/bin/npm
+    creates=/usr/local/bin/npm
+
+- name: set NODE_JS_HOME
+  become: true
+  template: >
+    src=node_home.j2
+    dest=/etc/profile.d/node_home.sh
+    mode=0644

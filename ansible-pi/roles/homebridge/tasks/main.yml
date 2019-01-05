@@ -1,0 +1,63 @@
+- name: 'Install require apt-get packages'
+  apt:
+    pkg={{item}}
+    state=installed
+  become: yes
+  become_method: sudo
+  with_items:
+    - libavahi-compat-libdnssd-dev
+
+- name: Install the homebridge npm package globally
+  npm:
+    name: "{{ item }}"
+    global: yes
+  with_items:
+    - mdns
+    - homebridge
+
+- name: Fix homebridge somehow
+  become: yes
+  command: cd /opt/node/lib/node_modules/homebridge && npm install --unsafe-perm mdns && npm rebuild --unsafe-perm
+
+- name: Symlink homebridge executable into PATH
+  file:
+    src: "/opt/node/lib/node_modules/homebridge/bin/homebridge"
+    dest: /usr/local/bin/homebridge
+    state: link
+
+
+- name: Install the required plugins
+  npm:
+    name: homebridge-platform-wemo
+    global: yes
+
+- name: Create a homebridge user
+  become: yes
+  user:
+    name: homebridge
+    comment: "HomeBridge"
+
+- name: Add config.json
+  become: yes
+  copy:
+    src: config.json
+    dest: /home/homebridge/config.json
+    owner: root
+    group: root
+    mode: 0444
+
+- name: add systemd unit and EnvFile
+  become: yes
+  template:
+    src: etc/systemd/system/homebridge.service.j2
+    dest: /etc/systemd/system/homebridge.service
+    owner: root
+    group: root
+    mode: 0444
+
+- name: start homebridge
+  become: yes
+  service:
+    name: homebridge
+    state: restarted
+    enabled: yes

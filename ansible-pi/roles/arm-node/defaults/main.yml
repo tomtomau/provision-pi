@@ -1,0 +1,5 @@
+arm_node:
+  install_dir: /opt/node
+  architecture: armv6l
+  version: v8.9.4
+  sha256sum: 81f138e935323246bd5da518eb0ea8ad00008f3c8a8d606e17589a545a9c73d1

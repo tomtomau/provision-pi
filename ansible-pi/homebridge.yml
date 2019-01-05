@@ -1,0 +1,8 @@
+---
+# Install Homebridge
+- name: Install Homebridge
+  hosts: all
+  remote_user: pi
+  roles:
+#    - role: arm-node
+    - role: homebridge

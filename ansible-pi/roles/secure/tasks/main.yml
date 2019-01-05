@@ -1,0 +1,16 @@
+- name: Set authorized key taken from file
+  authorized_key:
+      user: pi
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+- name: Disable passwordless au th
+  become: yes
+  copy:
+      force: yes
+      src: sshd_config
+      dest: /etc/ssh/sshd_config
+      mode: 0644
+- name: Reload ssh service
+  service:
+      name: ssh
+      state: reloaded
