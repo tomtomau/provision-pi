@@ -39,7 +39,7 @@
 - name: 'Install packages'
   apt:
     pkg={{item}}
-    state=installed
+    state=present
   become: yes
   become_method: sudo
   with_items:
@@ -49,7 +49,5 @@
 - name: 'Reboot'
   become: yes
   become_method: sudo
-  command: shutdown -r now "Ansible updates triggered"
-  async: 0
-  poll: 0
-  ignore_errors: true
+  reboot:
+    reboot_timeout: 3600 # Raspberry pis are slow

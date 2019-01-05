@@ -9,6 +9,7 @@ ExecStart=/usr/local/bin/homebridge -U /home/homebridge
 Restart=on-failure
 RestartSec=10
 KillMode=process
-StandardOutput=/var/log/homebridge.log
+StandardOutput=syslog
+StandardError=syslog
 [Install]
 WantedBy=multi-user.target

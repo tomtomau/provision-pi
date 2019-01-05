@@ -1,23 +1,32 @@
 - name: 'Install require apt-get packages'
   apt:
-    pkg={{item}}
-    state=installed
+    pkg: [libavahi-compat-libdnssd-dev]
+    state: installed
   become: yes
   become_method: sudo
-  with_items:
-    - libavahi-compat-libdnssd-dev
 
 - name: Install the homebridge npm package globally
+  become: yes
+  become_method: sudo
   npm:
     name: "{{ item }}"
     global: yes
   with_items:
-    - mdns
     - homebridge
 
-- name: Fix homebridge somehow
+- name: Install mdns unsafely
   become: yes
-  command: cd /opt/node/lib/node_modules/homebridge && npm install --unsafe-perm mdns && npm rebuild --unsafe-perm
+  become_method: sudo
+  command: npm install --unsafe-perm mdns
+  args:
+    chdir: /opt/node/lib/node_modules/homebridge
+
+- name: Rebuild homebridge
+  become: yes
+  become_method: sudo
+  command: npm rebuild --unsafe-perm
+  args:
+    chdir: /opt/node/lib/node_modules/homebridge
 
 - name: Symlink homebridge executable into PATH
   file:
