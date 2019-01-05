@@ -3,5 +3,6 @@
 - name: Configure Raspberry Pi
   hosts: all
   remote_user: pi
+  become: yes
   roles:
     - clean

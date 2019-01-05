@@ -1,7 +1,7 @@
 ---
 # Configure Raspberry Pi
 - name: Configure Raspberry Pi
-  hosts: unsecured
+  hosts: all
   remote_user: pi
   roles:
     - secure
